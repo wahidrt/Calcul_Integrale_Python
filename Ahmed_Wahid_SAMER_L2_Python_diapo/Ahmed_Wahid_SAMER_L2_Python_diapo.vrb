@@ -1,0 +1,15 @@
+\frametitle{La Méthode d'Euler}
+\begin{lstlisting}[language=Python]
+def euler(f, x0, y0, h, n):
+
+    x_v = [x0]
+    y_v = [y0]
+
+    for i in range(1, n+1):
+        x = x0 + i * h
+        y = y_v[-1] + h * f(x_v[-1], y_v[-1])
+        x_v.append(x)
+        y_v.append(y)
+
+    return x_v, y_v
+\end{lstlisting}

@@ -1,0 +1,476 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[french]{babel}
+\usepackage{shadow}
+\usepackage{latexsym}
+\usepackage{marvosym}
+\usepackage{enumerate}
+\usepackage{xcolor}
+
+\geometry{a4paper,
+  left=20mm,
+  right=20mm,
+  top=30mm,
+  bottom=30mm
+}
+
+
+
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0,0,0}%{0.5,0.5,0.5} initialement mais trop clair
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+\lstset{language=Python}
+
+\lstset{
+literate=
+{á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+{à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+{€}{{\euro}}1 {ê}{{\^e}}1 {â}{{\^a}}1 {ô}{{\^o}}1
+}
+
+
+\begin{document}
+\pagestyle{fancy}
+	\renewcommand{\headrulewidth}{0.5pt}
+	\fancyhead[R]{L2 Math\'ematiques}
+    \fancyhead[L]{\chaptername\ \thechapter: \leftmark}
+
+\begin{titlepage}
+  \begin{center}
+
+    \vspace*{1cm}
+
+    \Large
+    \textbf{Université d'Évry Paris-Saclay}
+
+    \vspace{1.5cm}
+
+    \large
+    Faculté des Sciences
+
+    \vspace{1.5cm}
+
+    \large
+    2ème année de Licence en Mathématiques
+
+    \vspace{2cm}
+
+    \includegraphics[width=0.4\textwidth]{logo_univ.png}
+
+    \vspace{2cm}
+
+    \Large
+    \textbf{Diverses méthodes d’intégration}
+
+    \vspace{2cm}
+
+    \large
+    Réalisé par :\\ SAMER Ahmed Wahid
+
+
+    \vspace{2cm}
+
+    \large
+    Année académique : 2023-2024
+
+  \end{center}
+\end{titlepage}
+
+\tableofcontents
+    \thispagestyle{fancy}
+
+
+\newpage
+\section{Introduction}
+
+L'intégration est une des pierres angulaires de l'analyse mathématique, jouant un rôle crucial dans divers domaines tels que la physique, l'ingénierie, la statistique et l'économie. Elle permet de déterminer des aires sous des courbes, des volumes, des valeurs centrales et d'autres quantités importantes. Cependant, à l'exception de quelques fonctions simples, la plupart des intégrales ne peuvent pas être calculées exactement et nécessitent des méthodes d'approximation.
+\\
+\\
+Dans ce contexte, plusieurs méthodes d'approximation ont été développées pour estimer les valeurs des intégrales. Ces méthodes, bien que basées sur des principes mathématiques variés, visent toutes à fournir une valeur approchée qui se rapproche le plus possible de la vraie valeur de l'intégrale. Parmi ces techniques, nous explorerons principalement la méthode des rectangles, la méthode des trapèzes,la méthode de Simpson, la méthode de Monte-Carlo, La méthode de Gauss ainsi que la méthode d'euler.
+\\
+\\
+Ce travail vise à établir une comparaison critique entre ces différentes stratégies d'intégration. Nous développerons et présenterons des scripts Python détaillés pour chacune de ces méthodes, les appliquant à des intégrales de diverses dimensions. Notre objectif est de déterminer leur efficacité et précision relative, soulignant spécifiquement l'ampleur des erreurs d'approximation associées. Ce faisant, nous aspirons non seulement à éclairer les nuances théoriques mais aussi à offrir une perspective pratique sur l'application efficace de ces méthodes d'intégration numérique.
+\\
+\\
+\begin{center}
+\includegraphics[scale=0.4]{600px-Integral_as_region_under_curve.svg.png}  \\
+source : https://fr.wikiversity.org/wiki/Approche_th\%C3\%A9orique_du_calcul_int\%C3\%A9gral
+\end{center}
+
+\\
+\\
+\newpage
+
+
+\section{La Méthode de Simpson}
+La méthode de Simpson repose sur l'utilisation de polynômes du second degré pour approximer la fonction $f$ sur chaque sous-intervalle de l'intervalle d'intégration global $[a,b]$. En ajustant ces polynômes pour passer par trois points clés sur chaque segment, la méthode permet une estimation précise de l'intégrale, même avec un nombre réduit de subdivisions.
+
+\subsection{Procédure Détail de la Méthode}
+Pour appliquer la méthode de Simpson :
+\begin{itemize}
+  \item Division de l'intervalle : Divisons l'intervalle $[a,b]$ en $n$ sous-intervalles égaux, où $n$ doit être un nombre pair. La largeur de chaque sous-intervalle est $h = \frac{b-a}{n}$.
+  \item Points de Calcul : Pour chaque paire de sous-intervalles, nous utiliseront les points finaux et le point médian pour définir une parabole. Ces points sont $x_0, x_1, \dots, x_n$ où $x_i = a + i \cdot h$.
+  \item Application de la Formule : L'estimation de l'intégrale sur chaque paire de sous-intervalles $[x_{2i}, x_{2i+2}]$ est donnée par :
+  \[
+  \int_{x_{2i}}^{x_{2i+2}} f(x) \, dx \approx \frac{h}{3} (f(x_{2i}) + 4f(x_{2i+1}) + f(x_{2i+2}))
+  \]
+  où $x_{2i+1}$ est le point médian.
+\end{itemize}
+
+\subsection{Somme des Contributions}
+L'approximation totale de l'intégrale sur $[a,b]$ est alors la somme des contributions de toutes les paires de sous-intervalles :
+\[
+\int_a^b f(x) \, dx \approx \frac{h}{3} [f(x_0) + 4f(x_1) + 2f(x_2) + 4f(x_3) + 2f(x_4) + \dots + 4f(x_{n-1}) + f(x_n)]
+\]
+
+\subsection{Efficacité et Erreur}
+L'erreur dans la méthode de Simpson est proportionnelle à la quatrième puissance de la largeur des sous-intervalles $h$, ce qui en fait une méthode d'ordre élevé. Plus précisément, La méthode est d'ordre $N = 3$. On a :
+\[
+K_3(t) = \int_{a}^{b} (x - t)^3_+ dx - (b-a) \left( \frac{1}{6} (a - t)^3 + \frac{2}{3} \left( \frac{a+b}{2} - t \right)^3 + \frac{1}{6} (b - t)^3 \right)
+\]
+\[
+= \frac{(b - t)^4}{4} - \left( b - a \right) \left( \frac{2}{3} (\frac{a + b}{2} - t)^3 + \frac{1}{6} (b - t)^3\right)
+\]
+\[
+= \begin{cases}
+\frac{(t - a)^3(3t - 2b - a)}{12} & \text{si } a \leq t < \frac{a + b}{2}, \\
+\frac{(b - t)^3(b + 2a - 3t)}{12} & \text{si } \frac{a + b}{2} \leq t \leq b,
+\end{cases}
+\]
+qui est de signe constant négatif sur $[a, b]$, en vertu des inégalités :
+\[
+\frac{2a + b}{3} \leq \frac{a + b}{2} \leq \frac{a + 2b}{3}.
+\]
+On a donc la formule d'erreur suivante pour une fonction $f$ de classe $C^2$ :
+\[
+E(f) = \frac{f^{(4)}(c)}{6} \int_{a}^{b} K_3(t) dt = \frac{(b - a)^5}{2880} f^{(4)}(c)
+\]
+Par conséquent,
+\[
+|E(f)| \leq \frac{(b - a)^5}{2880} ||f^{(4)}||_{\infty}.
+\]
+Considérons maintenant une méthode de Simpson composée sur $[a, b]$, dans laquelle tous les segments $[a_i, a_{i+1}]$ ont même longueur $\frac{b - a}{p}$. Les $p$ erreurs de quadratures élémentaires s'additionnent, et l'on trouve de la même manière que dans le cas du point milieu :
+\[
+E(f) = \frac{(b - a)^5}{2880p^2} f^{(4)}(c).
+\]
+
+
+\subsection{Mise en œuvre et exemples}
+
+La mise en œuvre de la Méthode de Simpson en Python peut être réalisée en suivant ces étapes :
+
+\begin{lstlisting}
+def simpson(f, a, b, n):
+    if n % 2 != 0:
+        raise ValueError("Le nombre n'est pas pair.")
+    
+    h = (b - a) / n
+    x = [a + i * h for i in range(n+1)]
+    y = [f(x[i]) for i in range(n+1)]
+    
+    integral = y[0] + y[-1] 
+    
+    for i in range(1, n, 2):
+        integral += 4 * y[i]
+    
+    for i in range(2, n-1, 2):
+        integral += 2 * y[i]
+    
+    integral *= h / 3
+    return integral
+\end{lstlisting}
+\newpage
+
+
+\section{La Méthode de Monte Carlo}
+le principe de la Méthode de Monte Carlo est de l'échantillonnage aléatoire pour estimer l'espérance mathématique d'une fonction, qui est directement reliée à l'intégrale de la fonction sur un intervalle ou un domaine donné. L'idée est de tirer aléatoirement des échantillons et d'utiliser la moyenne des évaluations de la fonction sur ces échantillons pour approximer l'intégrale.
+
+\subsection{Implémentation de la Procédure}
+Supposons que l'on souhaite estimer l'intégrale de la fonction $f$ sur un intervalle $[a, b]$. On procède comme suit :
+\begin{itemize}
+  \item Génération de Points Aléatoires : On génère $N$ points aléatoires $x_i$ uniformément répartis dans l'intervalle.
+  \item Évaluation de la Fonction : On calcule $f(x_i)$ pour chaque point $x_i$.
+  \item Calcul de la Moyenne : On calcule la moyenne des valeurs obtenues : $\overline{f} = \frac{1}{N} \sum_{i=1}^N f(x_i)$.
+  \item Estimation de l'Intégrale : L'estimation de l'intégrale est donnée par $(b-a) \cdot \overline{f}$.
+\end{itemize}
+
+
+\subsection{Analyse de la Convergence}
+L'erreur de l'estimation par la méthode de Monte Carlo diminue en $O(N^{-1/2})$, où $N$ est le nombre de points échantillonnés. Cette convergence est garantie par la loi des grands nombres et le théorème central limite, indépendamment de la dimension de l'intégrale.
+
+\subsection{Discussion sur la Variabilité}
+L'erreur statistique associée à la méthode de Monte Carlo est proportionnelle à la variance de $f(x)$ sur l'intervalle considéré. Pour réduire cette variance, et donc l'erreur, on peut utiliser des techniques comme le "stratified sampling" ou le "importance sampling", qui visent à améliorer l'efficacité de l'échantillonnage.
+\\
+
+\subsection{Mise en œuvre et exemples}
+
+La mise en œuvre de la méthode de Monte-Carlo en Python peut être réalisée en suivant ces étapes :
+
+\begin{lstlisting}
+import random
+def monte_carlo(f, a, b, n):
+    t = 0
+    for _ in range(n):
+        x = random.uniform(a, b)
+        t += f(x)
+    carlo = t / n
+    return (b - a) * carlo
+\end{lstlisting}
+\newpage
+
+
+\section{La Méthode des Rectangles}
+Cette technique approche l'intégrale d'une fonction continue en subdivisant de parties égales, ce qui génère de multiples rectangles dont l'aire combinée sert d'approximation à l'intégrale de la fonction.
+
+\subsection{Schématisation de la Procédure}
+L'intervalle $[a, b]$ est divisé en $n$ sous-intervalles de largeur $h = \frac{b-a}{n}$. Pour chaque sous-intervalle $[x_{i-1}, x_i]$, on considère un rectangle avec une base $h$ et une hauteur $f(x_i)$ où $x_i$ peut être le point gauche, le point droit ou tout autre point intermédiaire du sous-intervalle, selon la variante de la méthode choisie (point milieu, point gauche, point droit).
+
+L'estimation de l'intégrale devient alors la somme des aires de ces rectangles :
+\[
+\int_a^b f(x) \, dx \approx h(f(x_0) + f(x_1) + \dots + f(x_{n-1}))
+\]
+
+\subsection{Exploration de Différentes Variantes}
+Méthode du Point Gauche: Chaque $x_i$ est le point gauche du sous-intervalle, donc $x_i = x_{i-1}$.\\
+Méthode du Point Droit: Chaque $x_i$ est le point droit, donc $x_i = x_i$.\\
+Méthode du Point Milieu: Chaque $x_i$ est le milieu du sous-intervalle, donc $x_i = \frac{x_{i-1} + x_i}{2}$.
+
+\subsection{Évaluation de la Précision et de l'Erreur}
+La précision de cette méthode dépend grandement de la valeur de $n$, le nombre de subdivisions. Une valeur plus élevée de $n$ réduit la largeur $h$ des rectangles et augmente généralement la précision de l'approximation. L'erreur de cette méthode pour une fonction continûment dérivable est proportionnelle à la première puissance de $h$, et peut être explicitée par une expression impliquant la dérivée de la fonction sur l'intervalle:
+La méthode est d'ordre $N = 1$.\\
+Le noyau de Peano est donné par la formule :
+\[
+K_1(t) = \int_{a}^{b} (x - t)_+ dx - \left( \frac{b-a}{2} - \left( \frac{a+b}{2} - t \right) \right)
+\]
+\[
+= \frac{(b-t)^2}{2} - \frac{b-a}{2} + \left( \frac{a+b}{2} - t \right)_+
+\]
+\[
+= \begin{cases}
+\frac{(t-a)^2}{2} & \text{si } a \leq t < \frac{a+b}{2}, \\
+\frac{(b-t)^2}{2} & \text{si } \frac{a+b}{2} \leq t \leq b,
+\end{cases}
+\]
+car
+\[
+\int_{a}^{b} (x-t)_+ dx = \frac{(b-t)^2}{2}.
+\]
+Le noyau de Peano est donc de signe constant positif sur $[a, b]$, d'où la formule d'erreur pour une fonction $f$ de classe $C^2$ :
+\[
+E(f) = f''(c) \int_{a}^{b} K_1(t) dt
+\]
+\[
+= f''(c) \left( \int_{a}^{\frac{a+b}{2}} \frac{(t-a)^2}{2} dt + f''(c) \int_{\frac{a+b}{2}}^{b} \frac{(b-t)^2}{2} dt \right)
+\]
+\[
+= \frac{(b-a)^3}{24} f''(c).
+\]
+\subsection{Mise en œuvre et exemples}
+
+En pratique, la méthode des rectangles peut être implémentée de manière simple en Python. Voici un exemple d'algorithme :
+\begin{lstlisting}
+def rectangle(f, a, b, n):
+    h = (b - a) / n
+    integral = 0
+    for i in range(n):
+        x = a + i * h
+        integral += f(x)
+    integral *= h
+    return integral
+\end{lstlisting}
+
+
+\section{La Méthode des Trapèzes}
+Lorsqu'on souhaite estimer l'intégrale d'une fonction la méthode des trapèzes remplace la courbe de la fonction par une série de segments linéaires qui relient les points calculés de la fonction. Ce processus transforme l'aire sous la courbe en une somme d'aires de trapèzes.
+
+\subsection{Formalisation de la Méthode}
+Considérons l'intervalle $[a,b]$ divisé en $n$ sous-intervalles égaux de largeur $h = \frac{b-a}{n}$. Les points $x_0, x_1, \dots, x_n$ sont définis tels que $x_i = a + i \cdot h$. L'aire sous la courbe de $f$ sur chaque sous-intervalle $[x_i, x_{i+1}]$ est approximée par l'aire du trapèze formé par les points $(x_i, f(x_i))$ et $(x_{i+1}, f(x_{i+1}))$.
+
+La somme des aires de ces trapèzes donne l'estimation de l'intégrale:
+\[
+\int_a^b f(x) \, dx \approx \frac{h}{2} \left( f(x_0) + 2f(x_1) + 2f(x_2) + \dots + 2f(x_{n-1}) + f(x_n) \right)
+\]
+
+\subsection{Élaboration et Justification}
+L'expression dérivée se fonde sur le calcul de l'aire d'un trapèze isolé, où $h$ est la hauteur ou la largeur du sous-intervalle, et $f(x_i)$ et $f(x_{i+1})$ sont les longueurs des bases parallèles du trapèze. Cette formule garantit que chaque point, sauf les extrémités, contribue deux fois, reflétant leur partage entre deux trapèzes adjacents.
+
+\subsection{Évaluation de l'Erreur}
+L'erreur commise par la méthode des trapèzes est liée à la seconde dérivée de la fonction $f$ sur l'intervalle $[a,b]$. Plus précisément, l'erreur est proportionnelle à la largeur des sous-intervalles au carré, donnant lieu à une erreur globale qui décroît lorsque $n$ augmente. Pour une fonction $f$ deux fois dérivable,
+La méthode est d'ordre $N = 1$. Le noyau de Peano est donné par la formule :
+\[
+K_1(t) = \int_{a}^{b} (x - t)_+ dx - \left( (b-a)  \left( \frac{a+b}{2} - t \right) \right)
+\]
+\[
+= \left[ \frac{(x-t)^2}{2} \right]_{x=a}^{x=b} - \frac{b-a}{2} \left( (a-t) +(b-t) \right)
+\]
+\[
+= \frac{(b-t)^2}{2} - \frac{b-a}{2} \left( b-t \right)
+\]
+\[
+= \frac{(b-t)(a-t)}{2}
+\]
+qui est de signe constant négatif sur $[a, b]$, d'où la formule pour une fonction $f$ de classe $C^2$ :
+\[
+E(f) = f''(c) \int_{a}^{b} \frac{(b-t)(a-t)}{2} dt = -\frac{(b-a)^3}{12} f''(c).
+\]
+Par conséquent,
+\[
+|E(f)| \leq \frac{(b-a)^3}{12} ||f''||_{\infty}.
+\]
+
+\subsection{Mise en œuvre et exemples}
+
+Pour implémenter la méthode des trapèzes en Python, Voici un exemple d'algorithme :
+\begin{lstlisting}
+def trapezes(f, a, b, n):
+    h = (b - a) / n
+    integral = (f(a) + f(b)) / 2
+    for i in range(1, n):
+        integral += f(a + i * h)
+    integral *= h
+    return integral
+\end{lstlisting}
+\newpage
+
+\section{La Méthode de Gauss}
+La quadrature de Gauss est une approche qui améliore significativement l'efficacité des méthodes d'intégration numérique standard comme la méthode des trapèzes ou de Simpson. Elle est basée sur l'idée de choisir les points d'échantillonnage de la fonction et les poids de manière optimale pour maximiser la précision de l'approximation de l'intégrale.
+
+\subsection{Formulation de la Méthode}
+Pour une fonction $f$ continue sur l'intervalle $[a,b]$, l'intégrale de $f$ est approximée par:
+\[
+\int_{a}^b f(x) \, dx \approx \sum_{i=1}^n w_i f(x_i)
+\]
+où $x_i$ sont les zéros du $n$-ième polynôme orthogonal de Legendre $P_n(x)$, et $w_i$ sont les poids calculés par:
+\[
+w_i = \frac{2}{(1-x_i^2)[P_n'(x_i)]^2}
+\]
+
+\subsection{Analyse d'Erreur}
+L'erreur de la méthode de Gauss peut être exprimée en utilisant le $(2n)$-ième dérivé de la fonction intégrée, ce qui montre que la méthode est très efficace pour les fonctions qui peuvent être bien approchées par des polynômes de bas degré sur l'intervalle d'intégration. L'erreur est donnée par:
+\[
+E_n(f) = \frac{f^{(2n)}(\xi)}{(2n)!} \int_{a}^b [P_n(x)]^2 \, dx
+\]
+pour un certain $\xi$ dans $[a,b]$.
+\\
+\subsection{Mise en œuvre et exemples}
+
+Pour implémenter la Méthode de Gauss en Python, Voici un exemple d'algorithme :
+\begin{lstlisting}
+import numpy as np
+
+def gauss(f, a, b, n):
+    x, y = np.polynomial.legendre.leggauss(n)
+    x_s = 0.5 * (b - a) * x + 0.5 * (b + a)
+    integral = np.sum(y * f(x_s)) * 0.5 * (b - a)
+    return integral
+\end{lstlisting}
+
+\newpage
+
+\section{La Méthode d'Euler}
+La méthode d'Euler est l'une des plus simples méthodes numériques pour résoudre les équations différentielles ordinaires (EDO) du premier ordre qui peuvent être représentées sous la forme
+\[
+\frac{dy}{dt} = f(t, y).
+\]
+Cette méthode est particulièrement utile pour approcher des solutions là où les solutions analytiques sont difficiles ou impossibles à obtenir.
+
+\subsection{Formulation de la Méthode}
+Soit une équation différentielle donnée par:
+\[
+\frac{dy}{dt} = f(t, y)
+\]
+où $y(t_0) = y_0$ est la condition initiale. La méthode d'Euler approxime la solution en progressant par des pas discrets de taille $h$.
+
+Pour chaque pas $n$, la valeur suivante $y_{n+1}$ est prédite par la formule :
+\[
+y_{n+1} = y_n + h \cdot f(t_n, y_n) où t_{n+1} = t_n + h.
+\]
+
+
+\subsection{Démonstration du Théorème}
+Le développement principal repose sur l'approximation de la dérivée par une différence finie :
+\[
+\frac{dy}{dt} \approx \frac{y_{n+1} - y_n}{h}
+\]
+En substituant dans l'équation différentielle, nous obtenons :
+\[
+\frac{y_{n+1} - y_n}{h} = f(t_n, y_n)
+\]
+qui réarrangée donne la formule d'Euler :
+\[
+y_{n+1} = y_n + h \cdot f(t_n, y_n)
+\]
+
+\subsection{Analyse d'Erreur}
+L'erreur de troncature locale à chaque pas est donnée par le développement de Taylor :
+\[
+y(t_{n+1}) = y(t_n) + h \cdot y'(t_n) + \frac{h^2}{2} \cdot y''(\xi), \quad \xi \in [t_n, t_{n+1}]
+\] 
+L'erreur introduite à chaque étape est donc de l'ordre de $O(h^2)$, ce qui rend cette méthode d'ordre un en termes de convergence. Cependant, l'erreur peut s'accumuler sur de nombreux pas, nécessitant un soin dans le choix du pas de temps $h$.
+
+\subsection{Mise en œuvre et exemples}
+
+Pour implémenter la Méthode d'Euler en Python, Voici un exemple d'algorithme :
+\begin{lstlisting}
+def euler(f, x0, y0, h, n):
+
+    x_v = [x0] 
+    y_v = [y0]  
+    
+    for i in range(1, n+1):
+        x = x0 + i * h
+        y = y_v[-1] + h * f(x_v[-1], y_v[-1])
+        x_v.append(x)
+        y_v.append(y)
+    
+    return x_v, y_v
+
+\end{lstlisting}
+
+\newpage
+
+
+\section{Références}
+Livre : Mathématiques Tout-en-un pour la Licence 2, 2e édition, Sous la direction de Jean-Pierre RAMIS et André WARUSFEL : pages 928 a 945
+\\
+\\
+Tout le Cours - Intégration Numérique ,L2 Analyse numérique 1 S3, Alexandre Vidal 
+ 
+
+
+
+
+
+\end{document}
