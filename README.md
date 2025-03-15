@@ -30,10 +30,3 @@ L'objectif est de comparer ces méthodes en termes de précision et d'erreur est
 - **2D** : `rectangle_2d_midpoint`, `trapeze_2d`, `simpson_2d`, `romberg_2d`, `monte_carlo_2d`, `adaptive_simpson_2d`
 - **3D** : `rectangle_3d`, `trapezes_3d`, `simpson_3d`, `romberg_3d`, `monte_carlo_3d`, `gauss_legendre_3d`, `adaptive_simpson_3d`
 
----
-
-## 🚀 Installation et Exécution
-### 1️⃣ **Cloner le dépôt**
-```bash
-git clone https://github.com/wahidrt/Calcul_Integrale_Python.git
-cd Calcul_Integrale_Python
